@@ -80,15 +80,16 @@ Order by P.plan_id
 	who have churned rounded to 1 decimal place?
 *************************************************************************/
 
-Select Count(Distinct customer_id) AS 'total_customer', 
-       Round((Cast((Count(Distinct customer_id)* 100) AS Float) / (Select Count(Distinct customer_id) From subscriptions)),1) AS 'percent_disconnect_customers'
+Select Count(Distinct customer_id) AS 'total_churned_customer', 
+       Round((Cast((Count(Distinct customer_id)* 100) AS Float) / (Select Count(Distinct customer_id) From subscriptions)),1) AS 'percent_churned_customers'
 From subscriptions
 Where Plan_id = 4	/* Churn*/
 
 --	OUTPUT
---	total_customer		percent_disconnect_customers
+
+--	total_churned_customer	percent_churned_customers
 --	------------------------------------------------
---	307					30.7
+--	307						30.7
 
 --	INSIGHTS
 --	307 customers have churned
