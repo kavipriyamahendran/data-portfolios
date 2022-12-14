@@ -237,14 +237,14 @@ As
 (
 Select Customer_id, Plan_id, start_date, Row_number() Over(Partition by Customer_id Order by [Start_date]) As 'event_number',
        First_value (Start_date) Over(partition by Customer_id Order by [Start_date]) AS 'first_value',
-       Last_value(Start_date) Over(partition by Customer_id Order by [Start_date] Range Between Unbounded Preceding And Unbounded Following) As 'last_value'
+	   Lead (Start_date) Over(Partition by Customer_id Order by [Start_date]) AS 'Lead_value'
 From subscriptions
 Where plan_id in (0, 3) /* 0 - Trial plan, 3 - Pro Annual plan */ and 
 customer_id IN (Select customer_id From subscriptions Where plan_id = 3 /* Pro Annual plan */)
 )
 
 Select Count(customer_Id) AS 'total_customers',
-       Round(Avg(Cast(Datediff(Day, First_value, Last_value ) As Float)),2) AS 'avg_days_to_annual_plan'    
+       Round(Avg(Cast(Datediff(Day, First_value, Lead_value ) As Float)),2) AS 'avg_days_to_annual_plan'    
 From cte_customers_with_trial_and_annual
 Where event_number = 1
 
